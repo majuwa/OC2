@@ -24,13 +24,14 @@ public class Vulture {
          */
     	System.out.println("test");
         Unit target = getClosestEnemy();
-        move(target);
+        System.out.println(unit.getPosition().getPX());
+        System.out.println(unit.getPosition().getPY());
+        unit.move(new Position(3205, 1650),false);
     }
 
     private void move(Unit target) {
         unit.move(new Position(target.getPosition().getPX(), target.getPosition().getPY()), false);
     }
-
     private Unit getClosestEnemy() {
         Unit result = null;
         double minDistance = Double.POSITIVE_INFINITY;
