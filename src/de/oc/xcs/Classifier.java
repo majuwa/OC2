@@ -4,6 +4,7 @@ public class Classifier {
 	private double prediction;
 	private double predictionError;
 	private double fitness;
+	private Action action;
 	public double getPrediction() {
 		return prediction;
 	}
@@ -21,6 +22,9 @@ public class Classifier {
 	}
 	public void setFitness(double fitness) {
 		this.fitness = fitness;
+	}
+	public Action getAction(){
+		return this.action;
 	}
 
 }
