@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class ClassifierSet {
 	private static ClassifierSet singleton;
@@ -18,9 +20,14 @@ public class ClassifierSet {
 	}
 
 	public List<Classifier> findMatchingItems(Situation sit) {
-		ArrayList<Classifier> returnList = new ArrayList<Classifier>();
+		List<Classifier> returnList;
 		if (list.isEmpty())
 			initializeValues(sit);
+		returnList = list.parallelStream().filter(e -> e.getSituation().equals(sit)).collect(Collectors.toList());
+		if(calcAvg()> calcAvg(returnList)) {
+			initializeValues(sit);
+			returnList = list.parallelStream().filter(e -> e.getSituation().equals(sit)).collect(Collectors.toList());
+		}
 		return returnList;
 	}
 
@@ -56,4 +63,11 @@ public class ClassifierSet {
 		}
 		return map;
 	}
+	private double calcAvg(List<Classifier> list){
+		return list.parallelStream().map(e-> e.getFitness()).count() /list.size();
+	}
+	private double calcAvg(){
+		return calcAvg(this.list);
+	}
+
 }

@@ -30,6 +30,7 @@ public class Classifier {
 	public double getFitness() {
 		return fitness;
 	}
+	public Situation getSituation(){return situation;}
 	public void setFitness(double fitness) {
 		this.fitness = fitness;
 	}
