@@ -6,10 +6,12 @@ import jnibwapi.types.UnitType;
 
 import java.util.HashSet;
 
+import de.oc.xcs.UpdateClassifier;
+
 public class VultureAI  implements BWAPIEventListener, Runnable {
 
     private final JNIBWAPI bwapi;
-
+    public static int destroyedEnemy = 0; 
     private Vulture vulture;
 
     private HashSet<Unit> enemyUnits;
@@ -73,6 +75,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
                 break;
             }
         }
+        destroyedEnemy++;
         enemyUnits.remove(rmUnit);
     }
 
@@ -83,6 +86,11 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
     @Override
     public void matchEnd(boolean winner) {
+    	if(winner)
+    		System.out.println("WIN!!");
+    	else{
+    		System.out.println("LOOSE!!");
+    	}
     }
 
     @Override

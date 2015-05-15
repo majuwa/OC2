@@ -1,10 +1,8 @@
 package de.oc.xcs;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class ClassifierSet {
@@ -24,7 +22,7 @@ public class ClassifierSet {
 		if (list.isEmpty())
 			initializeValues(sit);
 		returnList = list.parallelStream().filter(e -> e.getSituation().equals(sit)).collect(Collectors.toList());
-		if(calcAvg()> calcAvg(returnList)) {
+		if(returnList.isEmpty() || (calcAvg() * 0.5)> calcAvg(returnList)) {
 			initializeValues(sit);
 			returnList = list.parallelStream().filter(e -> e.getSituation().equals(sit)).collect(Collectors.toList());
 		}
@@ -40,10 +38,28 @@ public class ClassifierSet {
 			else
 				t[i] = sit.getSituation()[i];
 		}
-		list.add(new Classifier(new Situation(t),ActionSet.instance().getRandomAction(),10,10,10));
+		list.add(new Classifier(new Situation(getAttack(50)), ActionSet.instance().getAttack(), 5.0, 40.0,1/40));
+		list.add(new Classifier(new Situation(getAttack(70)), ActionSet.instance().getAttack(), 10.0, 10.0,1/10));
+		list.add(new Classifier(new Situation(getAttack(80)), ActionSet.instance().getAttack(), 10.0, 10.0,1/10));
+		list.add(new Classifier(new Situation(getFlee()), ActionSet.instance().getFlee(), 30.0, 5.0,1/10));
+		list.add(new Classifier(new Situation(t),ActionSet.instance().getRandomAction(),10,10,1/10));
+		
 
 	}
-
+	private String[] getAttack(int x){
+		String[] t2 =new String[Situation.SITUATION_COUNTER];
+		for(int i = 0;i<t2.length;i++)
+			t2[i] = "#";
+		t2[Situation.DISTANCE]= Integer.toString(x);
+		return t2;
+	}
+	private String[] getFlee(){
+		String[] t2 =new String[Situation.SITUATION_COUNTER];
+		for(int i = 0;i<t2.length;i++)
+			t2[i] = "#";
+		t2[Situation.DISTANCE]= Integer.toString(10);
+		return t2;
+	}
 	public HashMap<Action, Double> getPredictionArray(List<Classifier> matchSet) {
 		HashMap<Action, Double> map = new HashMap<>();
 		HashMap<Action, Double> fitnesMap = new HashMap<>();
