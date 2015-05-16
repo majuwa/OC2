@@ -94,7 +94,7 @@ public class Vulture {
 				reward = 2 * unit.getHitPoints() + VultureAI.destroyedEnemy
 						* 1000 + 3 * (100 - nextEnemy.getHitPoints());
 			} else {
-				reward = unit.getHitPoints() + 4
+				reward = unit.getHitPoints() + 10
 						* (100 - nextEnemy.getHitPoints()) - 0.5
 						* bwapi.getFrameCount();
 
