@@ -22,59 +22,112 @@ public class Vulture {
 	private Unit nextEnemy;
 	private int hpEnemy;
 	private double rewardOld;
-	public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
+	private VultureAI vultureAI;
+
+	public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits,
+			VultureAI vultureAI) {
 		this.unit = unit;
 		this.bwapi = bwapi;
 		this.enemyUnits = enemyUnits;
 		rewardOld = Double.NaN;
+		this.vultureAI = vultureAI;
 	}
 
 	public void step() {
 		/**
 		 * TODO: XCS
 		 */
-		// System.out.println(bwapi.getFrameCount());
-		if(nextEnemy == null){
-			this.nextEnemy = getClosestEnemy();
+		if (vultureAI.getMode().equals(VultureAI.MODE.LEARNED)) {
+			if (nextEnemy == null) {
+				this.nextEnemy = getClosestEnemy();
+			}
+			if (nextEnemy == null)
+				return;
+			double reward;
+			double finalReward;
+			if (VultureAI.destroyedEnemy > 0) {
+				reward = 2 * unit.getHitPoints() + VultureAI.destroyedEnemy
+						* 1000 + 3 * (100 - nextEnemy.getHitPoints());
+			} else {
+				reward = unit.getHitPoints() + 4
+						* (100 - nextEnemy.getHitPoints()) - 0.5
+						* bwapi.getFrameCount();
+
+			}
+			if (!Double.isNaN(rewardOld)) {
+				finalReward = reward - rewardOld;
+				rewardOld = reward;
+			} else {
+				finalReward = reward;
+			}
+			if (unit.getHitPoints() < 30)
+				reward -= reward * 0.8 + 30;
+			if (!enemyUnits.contains(nextEnemy)) {
+				System.out.println("Enemy Destroyed");
+				nextEnemy = getClosestEnemy();
+				if (nextEnemy == null)
+					return;
+				this.hpEnemy = nextEnemy.getHitPoints();
+			}
+			ActionSet.instance().setReward(finalReward);
+			String distance = Double.toString(getDistance(nextEnemy));
+			String hp = Integer.toString(unit.getHitPoints());
+			String hpEnemy = Integer.toString(nextEnemy.getHitPoints());
+			String positionX = Integer.toString(unit.getPosition().getPX());
+			String positionY = Integer.toString(unit.getPosition().getPX());
+			String countEnemy = Integer.toString(enemyUnits.size());
+			Situation s = new Situation(distance, hp, hpEnemy, positionX,
+					positionY);
+			List<Classifier> matchingSet = ClassifierSet.instance()
+					.findMatchingItems(s);
+			ActionSelection.selectAction(matchingSet, unit, nextEnemy);
+			old = unit.getPosition();
+		} else {
+			if (nextEnemy == null) {
+				this.nextEnemy = getClosestEnemy();
+			}
+			if (nextEnemy == null)
+				return;
+			double reward;
+			double finalReward;
+			if (VultureAI.destroyedEnemy > 0) {
+				reward = 2 * unit.getHitPoints() + VultureAI.destroyedEnemy
+						* 1000 + 3 * (100 - nextEnemy.getHitPoints());
+			} else {
+				reward = unit.getHitPoints() + 4
+						* (100 - nextEnemy.getHitPoints()) - 0.5
+						* bwapi.getFrameCount();
+
+			}
+			if (!Double.isNaN(rewardOld)) {
+				finalReward = reward - rewardOld;
+				rewardOld = reward;
+			} else {
+				finalReward = reward;
+			}
+			if (unit.getHitPoints() < 30)
+				reward -= reward * 0.8 + 30;
+			if (!enemyUnits.contains(nextEnemy)) {
+				System.out.println("Enemy Destroyed");
+				nextEnemy = getClosestEnemy();
+				if (nextEnemy == null)
+					return;
+				this.hpEnemy = nextEnemy.getHitPoints();
+			}
+			ActionSet.instance().setReward(finalReward);
+			String distance = Double.toString(getDistance(nextEnemy));
+			String hp = Integer.toString(unit.getHitPoints());
+			String hpEnemy = Integer.toString(nextEnemy.getHitPoints());
+			String positionX = Integer.toString(unit.getPosition().getPX());
+			String positionY = Integer.toString(unit.getPosition().getPX());
+			String countEnemy = Integer.toString(enemyUnits.size());
+			Situation s = new Situation(distance, hp, hpEnemy, positionX,
+					positionY);
+			List<Classifier> matchingSet = ClassifierSet.instance()
+					.findMatchingItems(s);
+			ActionSelection.selectAction(matchingSet, unit, nextEnemy);
+			old = unit.getPosition();
 		}
-		if(nextEnemy == null)
-			return;
-		double reward;
-		double finalReward;
-		if(VultureAI.destroyedEnemy>0){
-			reward = 500 * unit.getHitPoints() + VultureAI.destroyedEnemy * 1000 + 3 * (100- nextEnemy.getHitPoints());
-		}
-		else{
-			reward = unit.getHitPoints() + 2 * (100- nextEnemy.getHitPoints());
-			
-		}
-		if(!Double.isNaN(rewardOld)){
-			finalReward = reward - rewardOld;
-			rewardOld = reward;
-		}
-		else{
-			finalReward = reward;
-		}
-		if(unit.getHitPoints()<30)
-			reward -=reward * 0.8 + 30;
-		if(!enemyUnits.contains(nextEnemy)){
-			System.out.println("Enemy Destroyed");
-			nextEnemy = getClosestEnemy();
-			this.hpEnemy = nextEnemy.getHitPoints();
-		}
-		ActionSet.instance().setReward(finalReward);
-		String distance = Double.toString(getDistance(nextEnemy));
-		String hp = Integer.toString(unit.getHitPoints());
-		String hpEnemy = Integer.toString(nextEnemy.getHitPoints());
-		String positionX = Integer.toString(unit.getPosition().getPX());
-		String positionY = Integer.toString(unit.getPosition().getPX());
-		String countEnemy = Integer.toString(enemyUnits.size());
-		Situation s = new Situation(distance, hp, hpEnemy, positionX,
-				positionY);
-		List<Classifier> matchingSet = ClassifierSet.instance()
-				.findMatchingItems(s);
-		ActionSelection.selectAction(matchingSet, unit, nextEnemy);
-		old = unit.getPosition();
 	}
 
 	private void move(Unit target) {

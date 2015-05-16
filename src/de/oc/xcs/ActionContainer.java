@@ -35,8 +35,10 @@ public class ActionContainer implements Iterable<Action>, Serializable {
 	}
 
 	public Action getRandomAction() {
-		if (first)
+		if (first){
+			first= !first;
 			return list.get(0);
+		}
 		Collections.shuffle(list);
 		return list.get(0);
 	}

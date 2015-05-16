@@ -1,19 +1,24 @@
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
+import java.util.List;
 
-import de.oc.xcs.ClassifierSet;
 import jnibwapi.BWAPIEventListener;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
 import jnibwapi.types.UnitType;
+import de.oc.xcs.ActionSet;
+import de.oc.xcs.Classifier;
+import de.oc.xcs.ClassifierSet;
 
 public class VultureAI  implements BWAPIEventListener, Runnable {
-
+	public enum MODE{LEARNED,LEARNING};
     private final JNIBWAPI bwapi;
+    private VultureAI.MODE mode;
     public static int destroyedEnemy = 0; 
     private Vulture vulture;
 
@@ -21,14 +26,30 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
     private int frame;
 
-    public VultureAI() {
+    public VultureAI(String s) {
         System.out.println("This is the VultureAI! :)");
-
+        if(s.equals(""))
+        	mode = MODE.LEARNING;
+        else{
+        	mode = MODE.LEARNED;
+        	try{
+        		FileInputStream stream = new FileInputStream(s);
+        		ObjectInputStream ob = new ObjectInputStream(stream);
+        		Object o = ob.readObject();
+        		if(o instanceof List){
+        			ClassifierSet.instance().setList((List<Classifier>) o);
+        		}
+        	}
+        	catch (IOException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+        	
+        }
         bwapi = new JNIBWAPI(this, false);
     }
 
-    public static void main(String[] args) {
-        new VultureAI().run();
+    public static void main(String[] args) {    	
+        new VultureAI(args.length == 1 ? args[0] : "").run();
     }
 
     @Override
@@ -60,7 +81,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
         if (type == UnitType.UnitTypes.Terran_Vulture) {
             if (unit.getPlayer() == bwapi.getSelf()) {
-                this.vulture = new Vulture(unit, bwapi, enemyUnits);
+                this.vulture = new Vulture(unit, bwapi, enemyUnits, this);
             }
         } else if (type == UnitType.UnitTypes.Protoss_Zealot) {
             if (unit.getPlayer() != bwapi.getSelf()) {
@@ -91,7 +112,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     public void matchEnd(boolean winner) {
     	if(winner){
     		System.out.println("WIN!!");
-    	
+    		ActionSet.instance().won();/*
     		try {
 				FileOutputStream fileOut = new FileOutputStream(System.currentTimeMillis() + ".obj");
 				ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -99,14 +120,17 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
     	}
     	else{
+    		ActionSet.instance().lost();
     		destroyedEnemy = 0;
     		System.out.println("LOOSE!!");
     	}
     }
-
+    public VultureAI.MODE getMode(){
+    	return mode;
+    }
     @Override
     public void keyPressed(int keyCode) {
 

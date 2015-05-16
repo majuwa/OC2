@@ -1,5 +1,6 @@
 package de.oc.xcs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActionSet {
@@ -8,16 +9,17 @@ public class ActionSet {
 	public static double GAMA = 0.71;
 	private double maxValue;
 	private List<Classifier> list;
-
+	private List<List<Classifier>> oldActionsSets;
 	private ActionSet() {
 		maxValue = Double.NaN;
+		oldActionsSets = new ArrayList<List<Classifier>>();
 	}
 
 	public static ActionSet instance() {
 		return singleton == null ? singleton = new ActionSet()
 				: singleton;
 	}
-
+	
 	public void setPredictionMax(double x) {
 		this.maxValue = x;
 	}
@@ -29,7 +31,35 @@ public class ActionSet {
 	public void setReward(double reward) {
 		if (Double.isNaN(maxValue))
 			return;
-		final double P = reward + GAMA * maxValue;
+		double P = reward + GAMA * maxValue;
+		updateList(list, P);
+		for(List<Classifier> list :oldActionsSets){
+			P*= GAMA * LEARNING_RATE;
+			updateList(list, P);
+		}
+		oldActionsSets.add(list);
+
+	}
+	public void won(){
+		double P = 1000 * GAMA;
+		for(List<Classifier> list :oldActionsSets){
+			P*= GAMA * LEARNING_RATE;
+			updateList(list, P);
+		}
+		clearActionSet();
+	}
+	public void lost(){
+		double P = -1000 * GAMA;
+		for(List<Classifier> list :oldActionsSets){
+			P*= GAMA * LEARNING_RATE;
+			updateList(list, P);
+		}
+		clearActionSet();
+	}
+	private void clearActionSet(){
+		oldActionsSets.clear();
+	}
+	private void updateList(List<Classifier> list,final double P){
 		list.stream().forEach(
 				e -> {
 					e.setPrediction(e.getPrediction() + LEARNING_RATE
@@ -41,7 +71,6 @@ public class ActionSet {
 					e.setFitness(e.getFitness() + LEARNING_RATE
 							* (1 / e.getPredictionError() - e.getFitness()));
 				});
-
 	}
 
 }
