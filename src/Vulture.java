@@ -24,6 +24,7 @@ public class Vulture {
 	private double rewardOld;
 	private VultureAI vultureAI;
 	private int oldTpEnemy = 100;
+	private int oldEnergyEnemy = 60;
 	public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits,
 			VultureAI vultureAI) {
 		this.unit = unit;
@@ -91,20 +92,25 @@ public class Vulture {
 			double reward;
 			double finalReward;
 			if (VultureAI.destroyedEnemy > 0) {
-				reward = 2 * unit.getHitPoints() + VultureAI.destroyedEnemy
-						* 1000 + 5 * (100 - nextEnemy.getHitPoints());
+				reward = 2 * unit.getHitPoints() + unit.getKillCount()
+						* 1000 + 5 * (oldTpEnemy - nextEnemy.getHitPoints());
+//						+ (oldEnergyEnemy - nextEnemy.getShields()) ;
 			} else {
-				reward = 0.9 * unit.getHitPoints() + 10
-						* nextEnemy.getHitPoints() - oldTpEnemy ;
-							// - 0.5
-						//* bwapi.getFrameCount();
-					oldTpEnemy = nextEnemy.getHitPoints();
+				reward = 2 * unit.getHitPoints() + 2
+						* (100 - nextEnemy.getHitPoints()) +
+						 (60-nextEnemy.getShields())
+//						+  5*(oldEnergyEnemy - nextEnemy.getShields()) ;
+							 - 0.5
+						* bwapi.getFrameCount();
 			}
+			oldTpEnemy = nextEnemy.getHitPoints();
+			oldEnergyEnemy = nextEnemy.getShields();
 			if (!Double.isNaN(rewardOld)) {
 				finalReward = reward - rewardOld;
 				rewardOld = reward;
 			} else {
 				finalReward = reward;
+				rewardOld = reward;
 			}
 			if (unit.getHitPoints() < 30)
 				reward -= reward * 0.8 + 30;
@@ -115,7 +121,7 @@ public class Vulture {
 					return;
 				this.hpEnemy = nextEnemy.getHitPoints();
 			}
-			ActionSet.instance().setReward(finalReward);
+			ActionSet.instance().setReward(reward);
 			String distance = Double.toString(getDistance(nextEnemy));
 			String hp = Integer.toString(unit.getHitPoints());
 			String hpEnemy = Integer.toString(nextEnemy.getHitPoints());
