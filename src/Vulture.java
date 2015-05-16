@@ -23,7 +23,7 @@ public class Vulture {
 	private int hpEnemy;
 	private double rewardOld;
 	private VultureAI vultureAI;
-
+	private int oldTpEnemy = 100;
 	public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits,
 			VultureAI vultureAI) {
 		this.unit = unit;
@@ -92,12 +92,13 @@ public class Vulture {
 			double finalReward;
 			if (VultureAI.destroyedEnemy > 0) {
 				reward = 2 * unit.getHitPoints() + VultureAI.destroyedEnemy
-						* 1000 + 3 * (100 - nextEnemy.getHitPoints());
+						* 1000 + 5 * (100 - nextEnemy.getHitPoints());
 			} else {
-				reward = unit.getHitPoints() + 10
-						* (100 - nextEnemy.getHitPoints()) - 0.5
-						* bwapi.getFrameCount();
-
+				reward = 0.9 * unit.getHitPoints() + 10
+						* nextEnemy.getHitPoints() - oldTpEnemy ;
+							// - 0.5
+						//* bwapi.getFrameCount();
+					oldTpEnemy = nextEnemy.getHitPoints();
 			}
 			if (!Double.isNaN(rewardOld)) {
 				finalReward = reward - rewardOld;
