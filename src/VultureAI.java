@@ -1,12 +1,15 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.HashSet;
+
+import de.oc.xcs.ClassifierSet;
 import jnibwapi.BWAPIEventListener;
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
 import jnibwapi.types.UnitType;
-
-import java.util.HashSet;
-
-import de.oc.xcs.UpdateClassifier;
 
 public class VultureAI  implements BWAPIEventListener, Runnable {
 
@@ -86,9 +89,20 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 
     @Override
     public void matchEnd(boolean winner) {
-    	if(winner)
+    	if(winner){
     		System.out.println("WIN!!");
+    	
+    		try {
+				FileOutputStream fileOut = new FileOutputStream(System.currentTimeMillis() + ".obj");
+				ObjectOutputStream out = new ObjectOutputStream(fileOut);
+				out.writeObject(ClassifierSet.instance().getList());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
     	else{
+    		destroyedEnemy = 0;
     		System.out.println("LOOSE!!");
     	}
     }

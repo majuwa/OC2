@@ -10,7 +10,7 @@ import de.oc.xcs.ActionSelection;
 import de.oc.xcs.Classifier;
 import de.oc.xcs.ClassifierSet;
 import de.oc.xcs.Situation;
-import de.oc.xcs.UpdateClassifier;
+import de.oc.xcs.ActionSet;
 
 public class Vulture {
 
@@ -20,11 +20,13 @@ public class Vulture {
 	private Position old;
 	private int i = 0;
 	private Unit nextEnemy;
+	private int hpEnemy;
+	private double rewardOld;
 	public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits) {
 		this.unit = unit;
 		this.bwapi = bwapi;
 		this.enemyUnits = enemyUnits;
-		
+		rewardOld = Double.NaN;
 	}
 
 	public void step() {
@@ -35,25 +37,32 @@ public class Vulture {
 		if(nextEnemy == null){
 			this.nextEnemy = getClosestEnemy();
 		}
+		if(nextEnemy == null)
+			return;
 		double reward;
-		if(VultureAI.destroyedEnemy>0)
-			reward = 3 * unit.getHitPoints() + VultureAI.destroyedEnemy * 10 + 2 * (100- nextEnemy.getHitPoints());
-		else
-			reward = 1.5 * unit.getHitPoints() + 2 * (100- nextEnemy.getHitPoints());
+		double finalReward;
+		if(VultureAI.destroyedEnemy>0){
+			reward = 500 * unit.getHitPoints() + VultureAI.destroyedEnemy * 1000 + 3 * (100- nextEnemy.getHitPoints());
+		}
+		else{
+			reward = unit.getHitPoints() + 2 * (100- nextEnemy.getHitPoints());
+			
+		}
+		if(!Double.isNaN(rewardOld)){
+			finalReward = reward - rewardOld;
+			rewardOld = reward;
+		}
+		else{
+			finalReward = reward;
+		}
 		if(unit.getHitPoints()<30)
 			reward -=reward * 0.8 + 30;
 		if(!enemyUnits.contains(nextEnemy)){
 			System.out.println("Enemy Destroyed");
 			nextEnemy = getClosestEnemy();
+			this.hpEnemy = nextEnemy.getHitPoints();
 		}
-		if (old != null) {
-		} else {
-			unit.attack(nextEnemy, false);
-			if(i++ >10)
-			old = unit.getPosition();
-			return;
-		}
-		UpdateClassifier.instance().setReward(reward);
+		ActionSet.instance().setReward(finalReward);
 		String distance = Double.toString(getDistance(nextEnemy));
 		String hp = Integer.toString(unit.getHitPoints());
 		String hpEnemy = Integer.toString(nextEnemy.getHitPoints());
@@ -61,7 +70,7 @@ public class Vulture {
 		String positionY = Integer.toString(unit.getPosition().getPX());
 		String countEnemy = Integer.toString(enemyUnits.size());
 		Situation s = new Situation(distance, hp, hpEnemy, positionX,
-				positionY, countEnemy);
+				positionY);
 		List<Classifier> matchingSet = ClassifierSet.instance()
 				.findMatchingItems(s);
 		ActionSelection.selectAction(matchingSet, unit, nextEnemy);

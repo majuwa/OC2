@@ -1,6 +1,12 @@
 package de.oc.xcs;
 
-public class Classifier {
+import java.io.Serializable;
+
+public class Classifier implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1622865511352294058L;
 	private double prediction;
 	private double predictionError;
 	private double fitness;

@@ -1,36 +1,47 @@
 package de.oc.xcs;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.List;
 
-public class ActionSet implements Iterable<Action> {
+public class ActionSet {
 	private static ActionSet singleton;
-	private ArrayList<Action> list;
-	private Action attack;
-	private Action flee;
-	private ActionSet(){
-		list = new ArrayList<>();
-		attack = new Action(Action.ATACK);
-		flee = new Action(Action.FLEE_UP);
-		list.add(attack);
-		//list.add(new Action(Action.FLEE_DOWN));
-		list.add(flee);
+	public static double LEARNING_RATE = 0.1;
+	public static double GAMA = 0.71;
+	private double maxValue;
+	private List<Classifier> list;
+
+	private ActionSet() {
+		maxValue = Double.NaN;
 	}
-	public static ActionSet instance(){
-		return singleton == null ? singleton = new ActionSet() : singleton;
+
+	public static ActionSet instance() {
+		return singleton == null ? singleton = new ActionSet()
+				: singleton;
 	}
-	public Iterator<Action> iterator(){
-		return list.iterator();
+
+	public void setPredictionMax(double x) {
+		this.maxValue = x;
 	}
-	public Action getRandomAction(){
-		Collections.shuffle(list);
-		return list.get(0);
+
+	public void setActionSet(List<Classifier> list) {
+		this.list = list;
 	}
-	public Action getAttack(){
-		return attack;
+
+	public void setReward(double reward) {
+		if (Double.isNaN(maxValue))
+			return;
+		final double P = reward + GAMA * maxValue;
+		list.stream().forEach(
+				e -> {
+					e.setPrediction(e.getPrediction() + LEARNING_RATE
+							* (P - e.getPrediction()));
+					e.setPredictionError(e.getPredictionError()
+							+ LEARNING_RATE
+							* (Math.abs(P - e.getPredictionError()
+									- e.getPredictionError())));
+					e.setFitness(e.getFitness() + LEARNING_RATE
+							* (1 / e.getPredictionError() - e.getFitness()));
+				});
+
 	}
-	public Action getFlee(){
-		return flee;
-	}
+
 }

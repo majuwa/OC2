@@ -25,7 +25,7 @@ public class ActionSelection {
 				.filter(e -> e.getAction().equals(selected))
 				.collect(Collectors.toList());
 		selected.doAction(myUnit, enemy);
-		UpdateClassifier.instance().setActionSet(actionSet);
-		UpdateClassifier.instance().setPredictionMax(tmp.getValue());
+		ActionSet.instance().setActionSet(actionSet);
+		ActionSet.instance().setPredictionMax(tmp.getValue());
 	}
 }
