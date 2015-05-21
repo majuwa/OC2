@@ -83,7 +83,7 @@ public class Vulture {
 			ActionSelection.selectAction(matchingSet, unit, nextEnemy);
 			old = unit.getPosition();
 		} else {
-			if (nextEnemy == null) {
+			if (nextEnemy == null) { 
 				this.nextEnemy = getClosestEnemy();
 			}
 			if (nextEnemy == null)
