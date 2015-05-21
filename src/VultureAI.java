@@ -29,7 +29,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     public VultureAI(String s) {
         System.out.println("This is the VultureAI! :)");
         if(s.equals(""))
-        	mode = MODE.LEARNING;
+        	mode = MODE.LEARNING; 
         else{
         	mode = MODE.LEARNED;
         	try{

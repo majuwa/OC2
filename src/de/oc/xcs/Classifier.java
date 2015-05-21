@@ -2,6 +2,9 @@ package de.oc.xcs;
 
 import java.io.Serializable;
 
+/*
+ * Classifier aus der XCS-Overview.
+ */
 public class Classifier implements Serializable {
 	/**
 	 * 

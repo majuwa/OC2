@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+/*
+ * Container für die Aktionen welche die Einheit Vulture ausführen kann.
+ */
 public class ActionContainer implements Iterable<Action>, Serializable {
 
 	/**

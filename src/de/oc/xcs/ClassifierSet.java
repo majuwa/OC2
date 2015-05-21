@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/*
+ * Container der alle Classifier enthält. Berechnet das Match-Set.
+ */
 public class ClassifierSet implements Serializable {
 	/**
 	 * 

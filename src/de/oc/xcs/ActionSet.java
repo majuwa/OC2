@@ -3,6 +3,9 @@ package de.oc.xcs;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * Verwaltet das Action-Set welches alle vorherigen Aktion beinhaltet und setzt ihren Reward.
+ */
 public class ActionSet {
 	private static ActionSet singleton;
 	public static double LEARNING_RATE = 0.1;
