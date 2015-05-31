@@ -2,6 +2,9 @@ package de.oc.xcs;
 
 import java.io.Serializable;
 
+/*
+ * Situation aus der Sicht der Vultures und der Classifier.
+ */
 public class Situation implements Serializable{
 	/**
 	 * 

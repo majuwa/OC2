@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+/*
+ * Wählt die als nächstes anstehende Aktion aus dem Match-Set aus.
+ */
 public class ActionSelection {
 	public ActionSelection() {
 

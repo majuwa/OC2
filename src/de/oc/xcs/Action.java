@@ -5,6 +5,9 @@ import java.io.Serializable;
 import jnibwapi.Position;
 import jnibwapi.Unit;
 
+/*
+ * Alle Aktionen welche die Einheit Vulture ausführen kann
+ */
 public class Action implements Serializable{
 	/**
 	 * 

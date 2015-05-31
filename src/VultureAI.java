@@ -21,7 +21,9 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     private VultureAI.MODE mode;
     public static int destroyedEnemy = 0; 
     private Vulture vulture;
-
+    private Evaluation eval;
+    private int totalHitPoints; 
+    private Unit unit;
     private HashSet<Unit> enemyUnits;
 
     private int frame;
@@ -29,7 +31,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     public VultureAI(String s) {
         System.out.println("This is the VultureAI! :)");
         if(s.equals(""))
-        	mode = MODE.LEARNING;
+        	mode = MODE.LEARNING; 
         else{
         	mode = MODE.LEARNED;
         	try{
@@ -61,6 +63,8 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
         bwapi.enablePerfectInformation();
         bwapi.enableUserInput();
         bwapi.setGameSpeed(0);
+        
+        
     }
 
     @Override
@@ -80,6 +84,8 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
         UnitType type = unit.getType();
 
         if (type == UnitType.UnitTypes.Terran_Vulture) {
+        	this.unit = unit;
+        	this.totalHitPoints = unit.getHitPoints();
             if (unit.getPlayer() == bwapi.getSelf()) {
                 this.vulture = new Vulture(unit, bwapi, enemyUnits, this);
             }
@@ -121,12 +127,15 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}*/
+    		
     	}
     	else{
     		ActionSet.instance().lost();
     		destroyedEnemy = 0;
     		System.out.println("LOOSE!!");
     	}
+    	eval = new Evaluation(this.frame, totalHitPoints - unit.getHitPoints());
+    	System.out.println(eval);
     }
     public VultureAI.MODE getMode(){
     	return mode;

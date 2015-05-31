@@ -1,16 +1,14 @@
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 import jnibwapi.JNIBWAPI;
 import jnibwapi.Position;
 import jnibwapi.Unit;
-import de.oc.xcs.Action;
 import de.oc.xcs.ActionSelection;
+import de.oc.xcs.ActionSet;
 import de.oc.xcs.Classifier;
 import de.oc.xcs.ClassifierSet;
 import de.oc.xcs.Situation;
-import de.oc.xcs.ActionSet;
 
 public class Vulture {
 
@@ -25,6 +23,7 @@ public class Vulture {
 	private VultureAI vultureAI;
 	private int oldTpEnemy = 100;
 	private int oldEnergyEnemy = 60;
+	
 	public Vulture(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits,
 			VultureAI vultureAI) {
 		this.unit = unit;
@@ -84,7 +83,7 @@ public class Vulture {
 			ActionSelection.selectAction(matchingSet, unit, nextEnemy);
 			old = unit.getPosition();
 		} else {
-			if (nextEnemy == null) {
+			if (nextEnemy == null) { 
 				this.nextEnemy = getClosestEnemy();
 			}
 			if (nextEnemy == null)
