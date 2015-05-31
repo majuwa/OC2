@@ -93,13 +93,13 @@ public class Vulture {
 			double finalReward;
 			if (VultureAI.destroyedEnemy > 0) {
 				reward = 2 * unit.getHitPoints() + unit.getKillCount()
-						* 1000 + 5 * (oldTpEnemy - nextEnemy.getHitPoints());
-//						+ (oldEnergyEnemy - nextEnemy.getShields()) ;
+						* 1000 + 5 * (oldTpEnemy - nextEnemy.getHitPoints())
+						+ (oldEnergyEnemy - nextEnemy.getShields()) ;
 			} else {
 				reward = 2 * unit.getHitPoints() + 2
 						* (100 - nextEnemy.getHitPoints()) +
 						 (60-nextEnemy.getShields())
-//						+  5*(oldEnergyEnemy - nextEnemy.getShields()) ;
+						+  2*(oldEnergyEnemy - nextEnemy.getShields()) 
 							 - 0.5
 						* bwapi.getFrameCount();
 			}
