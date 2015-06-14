@@ -2,6 +2,7 @@ package de.oc.xcs;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +38,39 @@ public class ClassifierSet implements Serializable {
 			returnList = list.parallelStream()
 					.filter(e -> e.getSituation().equals(sit))
 					.collect(Collectors.toList());
+		}
+		if (false) {
+			Classifier max = returnList.get(0), max2 = returnList.get(1);
+			for (Classifier a : returnList) {
+				if (a.getFitness() > max.getFitness()) {
+					max2 = max;
+					max = a;
+				}
+			}
+			Classifier tmp = new Classifier(max.getSituation(), max2.getAction(), max.getPrediction(), max.getPredictionError(), (max.getFitness() + max2.getFitness())/2);
+			// resulting two classifiers get half of their parents’ fitness
+			list.add(tmp);
+			returnList.add(tmp);
+			returnList.remove(max);
+			Classifier tmp1 = new Classifier(max2.getSituation(), max.getAction(), max2.getPrediction(), max2.getPredictionError(),  (max.getFitness() + max2.getFitness())/2);
+			list.add(tmp1); //add to classifier list
+			returnList.add(tmp1); //add to matchset
+			returnList.remove(max2);
+			if(Math.random() < 0.00001){ //mutation
+				Classifier mutTmp = new Classifier(tmp.getSituation(),new Action((int) (Math.random()*4 + 1)),tmp.getPrediction(),tmp.getPredictionError(),tmp.getFitness());
+				list.remove(tmp); // remove old classifier
+				returnList.remove(tmp); //remove old classifier matchset
+				returnList.add(mutTmp);
+				list.add(mutTmp);
+			}
+			if(Math.random() < 0.00001){ //mutation
+				Classifier mutTmp = new Classifier(tmp1.getSituation(),new Action((int) (Math.random()*4 + 1)),tmp1.getPrediction(),tmp1.getPredictionError(),tmp1.getFitness());
+				list.remove(tmp1); // remove old classifier
+				returnList.remove(tmp1); //remove old classifier matchset
+				returnList.add(mutTmp);
+				list.add(mutTmp);
+			}
+				
 		}
 		return returnList;
 	}

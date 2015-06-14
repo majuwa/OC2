@@ -19,9 +19,11 @@ public class Action implements Serializable{
 	protected static final int FLEE_MEDIUM = 3;
 	protected static final int ATACK = 4;
 	private int action;
+	
 	protected Action(int action){
 		this.action = action;
 	}
+	
 	public void doAction(Unit own, Unit enemy){
 		switch (action) {
 		case FLEE_LESS:
