@@ -118,7 +118,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
     public void matchEnd(boolean winner) {
     	if(winner){
     		System.out.println("WIN!!");
-    		ActionSet.instance().won();/*
+    		ActionSet.instance().won();
     		try {
 				FileOutputStream fileOut = new FileOutputStream(System.currentTimeMillis() + ".obj");
 				ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -126,7 +126,7 @@ public class VultureAI  implements BWAPIEventListener, Runnable {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}*/
+			}
     		
     	}
     	else{

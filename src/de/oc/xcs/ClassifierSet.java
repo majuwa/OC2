@@ -39,7 +39,7 @@ public class ClassifierSet implements Serializable {
 					.filter(e -> e.getSituation().equals(sit))
 					.collect(Collectors.toList());
 		}
-		if (false) {
+		if (Math.random() < 0.4 && returnList.size() > 2) {
 			Classifier max = returnList.get(0), max2 = returnList.get(1);
 			for (Classifier a : returnList) {
 				if (a.getFitness() > max.getFitness()) {
