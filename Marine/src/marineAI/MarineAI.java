@@ -122,6 +122,8 @@ public class MarineAI implements BWAPIEventListener, Runnable {
 		chrom = GAHelper.instance().getFittest();
 		if(winner)
 			System.out.println("Gewonnen");
+		else
+			System.out.println("verloren");
 	}
 
 	@Override

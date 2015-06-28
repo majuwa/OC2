@@ -48,7 +48,8 @@ public class Marine {
     
     private void move(Unit target){
     	Boiding t = new Boiding(this,chrom);
-    	t.nextPosition(chrom.getW1(), chrom.getW2(), chrom.getW3(), chrom.getW4());
+    	Vector2D moveTarget = t.nextPosition(chrom.getW1(), chrom.getW2(), chrom.getW3(), chrom.getW4());
+    	bwapi.move(unit.getID(),(int) moveTarget.getX(), (int)moveTarget.getY());
     }
 
     public Unit getClosestEnemy() {

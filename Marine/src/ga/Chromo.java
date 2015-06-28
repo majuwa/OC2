@@ -25,9 +25,9 @@ public class Chromo extends Chromosome {
 		setW2(Math.random() * 2);
 		setW3(Math.random() * 2);
 		setW4(Math.random() * 2);
-		setrSep(10);
-		setrCol(Math.random()*5);
-		setrRow(Math.random()*5);
+		setrSep(Math.random()*5 +3);
+		setrCol(Math.random()*3);
+		setrRow(Math.random()*3);
 	}
 
 
