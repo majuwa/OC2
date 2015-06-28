@@ -1,5 +1,7 @@
 package marineAI;
 
+import ga.Chromo;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,6 +11,8 @@ import jnibwapi.model.Unit;
 import jnibwapi.types.WeaponType;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+
+import boids.Boiding;
 
 /**
  * Created by Stefan Rudolph on 18.02.14.
@@ -20,13 +24,14 @@ public class Marine {
     private HashSet<Marine> marines;
     final private Unit unit;
     private int id;
-
-    public Marine(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits, int id, HashSet<Marine> marines) {
+    private Chromo chrom;
+    public Marine(Unit unit, JNIBWAPI bwapi, HashSet<Unit> enemyUnits, int id, HashSet<Marine> marines, Chromo chrom) {
         this.unit = unit;
         this.bwapi = bwapi;
         this.enemyUnits = enemyUnits;
         this.id = id;
         this.marines = marines;
+        this.chrom = chrom;
     }
 
     public void step() {
@@ -42,8 +47,8 @@ public class Marine {
     }
     
     private void move(Unit target){
-    	//TODO: Implement the flocking behavior in this method.
-    	bwapi.move(unit.getID(), target.getX(), target.getY());
+    	Boiding t = new Boiding(this,chrom);
+    	t.nextPosition(chrom.getW1(), chrom.getW2(), chrom.getW3(), chrom.getW4());
     }
 
     public Unit getClosestEnemy() {
