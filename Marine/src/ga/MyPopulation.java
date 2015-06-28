@@ -8,7 +8,11 @@ import java.util.List;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.genetics.Chromosome;
 import org.apache.commons.math3.genetics.Population;
-
+/**
+ * Population to modify with GA
+ * @author Maximilian Walter
+ *
+ */
 public class MyPopulation implements Population{
 	private List<Chromosome> list;
 	private int size;

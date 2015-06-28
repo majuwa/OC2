@@ -4,7 +4,11 @@ import jnibwapi.model.Unit;
 import marineAI.MarineAI;
 
 import org.apache.commons.math3.genetics.Chromosome;
-
+/**
+ * Chromosom Helper Class
+ * @author Maximilian Walter
+ *
+ */
 public class Chromo extends Chromosome {
 	private double w1,w2,w3,w4,rSep,rCol,rRow, fitness;
 	
@@ -30,17 +34,26 @@ public class Chromo extends Chromosome {
 		setrRow(Math.random()*3);
 	}
 
-
+	/**
+	 * Weigth for x1
+	 * @return
+	 */
 	public double getW1() {
 		return w1;
 	}
 
-
+	/**
+	 * Weight for x1
+	 * @param w1
+	 */
 	public void setW1(double w1) {
 		this.w1 = w1;
 	}
 
-
+	/**
+	 * 
+	 * @return
+	 */
 	public double getW2() {
 		return w2;
 	}
